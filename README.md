@@ -60,6 +60,18 @@ This app is a **Contact Manager** with intuitive UI, clean architecture, gesture
 
 ---
 
+## 🏗 Project Structure
+
+com.example.contactmanager
+├── data/ # Room database, DAO
+├── model/ # Contact data classes
+├── repository/ # Repository for data operations
+├── ui/
+│ ├── screens/ # Home, Detail, Edit, etc.
+│ └── components/ # Composable UI elements
+├── viewmodel/ # ViewModels for business logic
+└── utils/ # Utility files and constants
+
 ## 🛠 Installation Guide
 
 ### Prerequisites:
@@ -68,22 +80,22 @@ This app is a **Contact Manager** with intuitive UI, clean architecture, gesture
 - Kotlin 1.9+
 - Internet connection (for cloud sync)
 
-### Steps:
-
-1. **Clone the Repository**
-
-```bash
-git clone https://github.com/yourusername/contactease.git
+---
 
 
+## 🪄 Future Improvements
 
-com.example.contactease
-├── data/           # Room database + DAO
-├── model/          # Data classes
-├── repository/     # Repository layer
-├── ui/
-│   ├── screens/    # Home, Detail, Edit, etc.
-│   └── components/ # Reusable composables
-├── viewmodel/      # ViewModel classes
-└── utils/          # Constants, helpers
+- 🌙 **Dark Mode** – Support for light and dark themes  
+- 🏷️ **Contact Grouping & Tagging** – Organize contacts into categories  
+- 🔄 **Backup/Restore Options** – Safeguard data across installs  
+- 🔐 **Firebase Authentication** – Secure login for multiple users  
+- 🎨 **UI Animations & Transitions** – Smoother, more interactive experience  
+
+---
+
+## 🙌 Special Note
+
+This app is a **personal learning milestone** and the first step in my Android development journey. I'm excited to continue growing and building more complex projects.  
+**Feedback, suggestions, and contributions are always welcome!**
+
 
