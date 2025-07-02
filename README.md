@@ -63,13 +63,21 @@ This app is a **Contact Manager** with intuitive UI, clean architecture, gesture
 ## 🏗 Project Structure
 
 com.example.contactmanager
+
 ├── data/ # Room database, DAO
+
 ├── model/ # Contact data classes
+
 ├── repository/ # Repository for data operations
+
 ├── ui/
+
 │ ├── screens/ # Home, Detail, Edit, etc.
+
 │ └── components/ # Composable UI elements
+
 ├── viewmodel/ # ViewModels for business logic
+
 └── utils/ # Utility files and constants
 
 ## 🛠 Installation Guide
