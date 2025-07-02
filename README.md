@@ -74,3 +74,16 @@ This app is a **Contact Manager** with intuitive UI, clean architecture, gesture
 
 ```bash
 git clone https://github.com/yourusername/contactease.git
+
+
+
+com.example.contactease
+├── data/           # Room database + DAO
+├── model/          # Data classes
+├── repository/     # Repository layer
+├── ui/
+│   ├── screens/    # Home, Detail, Edit, etc.
+│   └── components/ # Reusable composables
+├── viewmodel/      # ViewModel classes
+└── utils/          # Constants, helpers
+
