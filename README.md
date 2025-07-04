@@ -36,7 +36,7 @@ This app is a **Contact Manager** with intuitive UI, clean architecture, gesture
 
 | Home Screen | Detail Screen | Edit Screen | Swipe-to-Call |
 |-------------|---------------|-------------|----------------|
-| ![home](screenshots/home_screen.png) | ![detail](screenshots/detail_screen.png) | ![edit](screenshots/edit_screen.png) | ![swipe](screenshots/swipe_call.png) |
+| ![home](Screenshot_20250704_234713.png) | ![detail](screenshots/detail_screen.png) | ![edit](screenshots/edit_screen.png) | ![swipe](screenshots/swipe_call.png) |
 
 ---
 
