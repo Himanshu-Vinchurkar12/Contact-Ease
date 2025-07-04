@@ -206,7 +206,7 @@ fun AddEditScreenUI(
             ) {
                 Spacer(modifier.width((screenWidth.value * 0.03).dp))
                 Text(
-                    text = "Add New Contact",
+                    text = if (contactId == null) "Add New Contact" else "Edit Contact ",
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     fontSize = (screenWidth.value * 0.06).sp
