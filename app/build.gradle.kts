@@ -64,8 +64,6 @@ dependencies {
 
     implementation("androidx.room:room-runtime:$room_version")
 
-    // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
-    // See Add the KSP plugin to your project
     ksp("androidx.room:room-compiler:$room_version")
     implementation("com.google.dagger:hilt-android:2.51.1")
     ksp("com.google.dagger:hilt-android-compiler:2.51.1")
@@ -78,4 +76,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 
     implementation("androidx.compose.material:material-icons-extended-android:1.7.8")
+    implementation ("androidx.compose.material:material:1.6.1" )// or latest stable
+
+
 }

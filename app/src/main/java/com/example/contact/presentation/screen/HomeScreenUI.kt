@@ -2,26 +2,20 @@ package com.example.contact.presentation.screen
 
 import android.Manifest
 import android.content.Intent
-import com.example.contact.R
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.widget.Toast
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
+import androidx.compose.material.SwipeToDismiss
+import androidx.compose.material.DismissValue
+import androidx.compose.material.rememberDismissState
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
-import androidx.compose.animation.with
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -34,29 +28,23 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.DismissDirection
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.DateRange
@@ -64,54 +52,37 @@ import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.SortByAlpha
 import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material.icons.rounded.Call
-import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material.icons.rounded.List
-import androidx.compose.material.icons.rounded.Mic
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.StarBorder
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Shapes
+import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -129,7 +100,8 @@ import kotlin.math.abs
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalFoundationApi::class,
-    ExperimentalAnimationApi::class
+    ExperimentalAnimationApi::class, ExperimentalPermissionsApi::class,
+    ExperimentalMaterialApi::class
 )
 @Composable
 fun HomeScreenUI(
@@ -182,19 +154,19 @@ fun HomeScreenUI(
                         )
                         .padding(horizontal = (screenWidth.value * 0.05).dp)
                 ) {
-                    Spacer(Modifier.height(screenHeight * 0.03f))
+                    Spacer(Modifier.height(screenHeight * 0.04f))
 
                     Text(
                         text = "Contacts",
-                        fontSize = (screenWidth.value * 0.05).sp,
+                        fontSize = (screenWidth.value * 0.06).sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
                     Spacer(Modifier.height(screenHeight * 0.008f))
                     Text(
                         text = "${contacts.size} contacts",
-                        fontSize = (screenWidth.value * 0.03).sp,
-                        fontWeight = FontWeight.Normal,
+                        fontSize = (screenWidth.value * 0.04).sp,
+                        fontWeight = FontWeight.Medium,
                         color = Color.White
 
                     )
@@ -364,6 +336,7 @@ fun HomeScreenUI(
                 Spacer(Modifier.height(screenHeight * 0.03f))
 
 
+                // Favourites Contacts
                 if (favoriteContacts.isNotEmpty()) {
                     Card(
                         modifier = Modifier
@@ -407,7 +380,7 @@ fun HomeScreenUI(
                                 .fillMaxWidth()
                                 .padding(horizontal = (screenWidth.value * 0.02).dp)
                         ) {
-                            favoriteContacts.forEach { contact ->
+                            favoriteContacts.forEachIndexed { index, contact ->
                                 AnimatedVisibility(
                                     visible = true,
                                     enter = fadeIn(tween(300)) + slideInVertically(tween(300)) { it / 2 },
@@ -420,8 +393,14 @@ fun HomeScreenUI(
                                         modifier = Modifier
                                     )
                                 }
+
+                                // Add spacing between contacts (but not after the last one)
+                                if (index < favoriteContacts.lastIndex) {
+                                    Spacer(Modifier.height(screenHeight * 0.015f))
+                                }
                             }
                         }
+
 
                         Spacer(Modifier.height(screenHeight * 0.02f))
                     }
@@ -499,26 +478,87 @@ fun HomeScreenUI(
 
                             Spacer(Modifier.height(screenHeight * 0.02f))
                         }
-                    } else {
+                    }
+                    else {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = (screenWidth.value * 0.02).dp)
+                                .padding(horizontal = (screenWidth.value * 0.01).dp)
                         ) {
-                            filteredContacts.forEach {
-                                AnimatedVisibility(
-                                    visible = true,
-                                    enter = fadeIn(tween(300)) + slideInVertically(tween(300)) { it / 2 },
-                                    exit = fadeOut(tween(300)) + slideOutVertically(tween(300)) { it / 2 }
+
+                            filteredContacts.forEach { contact ->
+                                val permissionState = rememberPermissionState(Manifest.permission.CALL_PHONE)
+                                val context = navController.context
+
+                                val dismissState = rememberDismissState(
+                                    confirmStateChange = { dismissValue ->
+                                        if (dismissValue == DismissValue.DismissedToEnd) {
+                                            if (permissionState.status.isGranted) {
+                                                val intent = Intent(Intent.ACTION_CALL).apply {
+                                                    data = Uri.parse("tel:${contact.phoneNo}")
+                                                }
+                                                context.startActivity(intent)
+                                            } else {
+                                                permissionState.launchPermissionRequest()
+                                            }
+                                        }
+                                        false // Don't dismiss
+                                    }
+                                )
+
+                                // Wrap the whole SwipeToDismiss with padding
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = (screenWidth.value * 0.04).dp, vertical = 6.dp)
                                 ) {
-                                    ContactItemsUI(
-                                        contact = it,
-                                        viewModel = viewModel,
-                                        navController = navController,
-                                        modifier = Modifier
+                                    SwipeToDismiss(
+                                        state = dismissState,
+                                        directions = setOf(DismissDirection.StartToEnd),
+                                        background = {
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .clip(RoundedCornerShape(20.dp))
+                                                    .background(Color(0xFF4CAF50)),
+                                                contentAlignment = Alignment.CenterStart
+                                            ) {
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    modifier = Modifier.padding(start = 24.dp)
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Rounded.Call,
+                                                        contentDescription = "Call",
+                                                        tint = Color.White,
+                                                        modifier = Modifier.size(24.dp)
+                                                    )
+                                                    Spacer(modifier = Modifier.width(12.dp))
+                                                    Text(
+                                                        text = "Calling...",
+                                                        color = Color.White,
+                                                        fontWeight = FontWeight.Bold
+                                                    )
+                                                }
+                                            }
+                                        },
+                                        dismissContent = {
+                                            ContactItemsUI(
+                                                contact = contact,
+                                                viewModel = viewModel,
+                                                navController = navController,
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .clip(RoundedCornerShape(20.dp))
+                                                    .background(Color.White)
+                                                    .border(1.dp, Color.LightGray, RoundedCornerShape(20.dp))
+                                            )
+                                        }
                                     )
                                 }
                             }
+
+
                         }
                         Spacer(Modifier.height(screenHeight * 0.02f))
                     }
@@ -612,7 +652,6 @@ fun ContactItemsUI(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(horizontal = 12.dp, vertical = 6.dp)
             .combinedClickable(
                 onClick = {
                     navController.navigate(Routes.DetailScreen(contact.id))

@@ -502,7 +502,7 @@ fun AddEditScreenUI(
 
                 Button(
                     onClick = {
-                    if (name.value.isEmpty() || phoneNo.value.isEmpty() || email.value.isEmpty()) {
+                    if (name.value.isEmpty() || phoneNo.value.isEmpty()) {
 
                         Toast.makeText(
                             context,
