@@ -50,6 +50,7 @@ This app is a **Contact Manager** with intuitive UI, clean architecture, gesture
 
 ## 🧰 Tech Stack
 
+
 - **Kotlin** – Programming language
 - **Jetpack Compose** – Modern declarative UI
 - **Room Database (MySQL)** – Local data persistence
