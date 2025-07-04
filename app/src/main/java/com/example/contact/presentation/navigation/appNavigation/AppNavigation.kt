@@ -18,9 +18,15 @@ import com.example.contact.presentation.screen.HomeScreenUI
 @Composable
 fun AppNavigation(viewModel: ContactViewModel) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Routes.HomeScreen) {
+    NavHost(navController = navController, startDestination = Routes.HomeScreen(null)) {
+
         composable<Routes.HomeScreen> {
-            HomeScreenUI(viewModel = viewModel, navController = navController)
+            val homeScreenParams = it.toRoute<Routes.HomeScreen>()
+            HomeScreenUI(
+                viewModel = viewModel,
+                navController = navController,
+                contactId = homeScreenParams.contactId
+            )
         }
         composable<Routes.AddEditScreen> {
             val addEditScreenParams = it.toRoute<Routes.AddEditScreen>()

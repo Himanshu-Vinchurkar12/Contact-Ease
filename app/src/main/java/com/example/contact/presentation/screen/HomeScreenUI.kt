@@ -16,6 +16,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
@@ -32,31 +34,41 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Call
+import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.SortByAlpha
+import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material.icons.rounded.Call
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.List
 import androidx.compose.material.icons.rounded.Mic
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.StarBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -69,10 +81,12 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
@@ -97,6 +111,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -108,6 +123,7 @@ import com.example.contact.presentation.navigation.routes.Routes
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import kotlin.math.abs
 
 
 @OptIn(
@@ -118,9 +134,9 @@ import com.google.accompanist.permissions.rememberPermissionState
 @Composable
 fun HomeScreenUI(
     viewModel: ContactViewModel,
-    navController: NavController
+    navController: NavController,
+    contactId: Int? = null
 ) {
-    val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
@@ -131,6 +147,8 @@ fun HomeScreenUI(
     var active = remember { mutableStateOf(false) }
     var isSortedByName = remember { mutableStateOf(true) }
     val dropDown = remember { mutableStateOf(false) }
+    val scrollState = rememberScrollState()
+
 
 
 
@@ -141,118 +159,223 @@ fun HomeScreenUI(
             var filteredContacts = contacts.filter {
                 it.name.contains(text.value, ignoreCase = true)
             }.let { list ->
-                if (isSortedByName.value) list.sortedBy { it.name } else list.sortedBy { it.dateOfEdit }
+                if (isSortedByName.value) list.sortedBy { it.name.toLowerCase() } else list.sortedBy { it.dateOfEdit }
             }
+            val favoriteContacts = contacts.filter { it.isFavorite == 1 }
 
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+            )
+            {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(
+                                    Color(0xFF3C8CE7),
+                                    Color(0xFF4FA3EC)
+                                )
+                            )
+                        )
+                        .padding(horizontal = (screenWidth.value * 0.05).dp)
+                ) {
+                    Spacer(Modifier.height(screenHeight * 0.03f))
 
-            Scaffold(
+                    Text(
+                        text = "Contacts",
+                        fontSize = (screenWidth.value * 0.05).sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Spacer(Modifier.height(screenHeight * 0.008f))
+                    Text(
+                        text = "${contacts.size} contacts",
+                        fontSize = (screenWidth.value * 0.03).sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.White
 
-                floatingActionButton = {
-                    FloatingActionButton(
+                    )
+                    Spacer(Modifier.height(screenHeight * 0.02f))
+
+                    GradientButton(
+                        text = "Add Contact",
                         onClick = {
                             navController.navigate(Routes.AddEditScreen(null))
                         },
-                        containerColor = Color(0xFF476CD9),
-                        contentColor = Color.White
-
-                    ) {
-                        Icon(imageVector = Icons.Default.Add, contentDescription = null)
-                    }
-                },
-            ) {
-                it
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(
+                        icon = Icons.Default.Add,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(
-                                Brush.horizontalGradient(
-                                    listOf(
-                                        Color(0xFF3C8CE7),
-                                        Color(0xFF4FA3EC)
-                                    )
+                            .padding(horizontal = (screenWidth.value * 0.02).dp)
+                    )
+                    Spacer(Modifier.height(screenHeight * 0.02f))
+
+                    OutlinedTextField(
+                        value = text.value,
+                        onValueChange = {
+                            text.value = it
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = (screenWidth.value * 0.02).dp),
+                        placeholder = {
+                            Text(text = "Search contacts...")
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.List,
+                                contentDescription = null,
+                                tint = Color.DarkGray,
+                                modifier = Modifier.clickable {
+                                    dropDown.value = true
+                                }
+                            )
+                        },
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.White,
+                            unfocusedBorderColor = Color(0xFFB6DBFA),
+                            unfocusedContainerColor = Color(0xFFAED5F6),
+                            focusedContainerColor = Color(0xFFB6DBFA)
+                        )
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 16.dp),
+                        contentAlignment = Alignment.TopStart
+                    )
+                    {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .padding(start = 8.dp)
+                                .wrapContentWidth()
+                        ) {
+
+                            val Shapes = Shapes(
+                                small = RoundedCornerShape(4.dp),
+                                medium = RoundedCornerShape(4.dp),  //<- used by `DropdownMenu`
+                                large = RoundedCornerShape(0.dp)
+                            )
+                            // DropdownMenu Positioned Properly
+                            AnimatedVisibility(
+                                visible = dropDown.value,
+                                enter = scaleIn(tween(300)) + slideInVertically(
+                                    initialOffsetY = { -40 },
+                                    animationSpec = tween(300)
+                                ),
+                                exit = scaleOut(tween(300)) + slideOutVertically(
+                                    targetOffsetY = { -40 },
+                                    animationSpec = tween(300)
                                 )
                             )
-                            .padding(horizontal = (screenWidth.value * 0.05).dp)
-                    ) {
-                        Spacer(Modifier.height(screenHeight * 0.02f))
+                            {
+                                DropdownMenu(
+                                    expanded = dropDown.value,
+                                    onDismissRequest = { dropDown.value = false },
+                                    modifier = Modifier
+                                        .width(150.dp)
+                                        .clip(RoundedCornerShape(20.dp)) // First clip the shape
+                                        .background(Color.White) // Then apply background
+                                ) {
 
-                        Text(
-                            text = "Contacts",
-                            fontSize = (screenWidth.value * 0.05).sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                        Spacer(Modifier.height(screenHeight * 0.008f))
-                        Text(
-                            text = "${contacts.size} contacts",
-                            fontSize = (screenWidth.value * 0.03).sp,
-                            fontWeight = FontWeight.Normal,
-                            color = Color.White
+                                    Column(modifier = Modifier.padding(vertical = 4.dp))
+                                    {
+                                        // Sort by Name
+                                        DropdownMenuItem(
+                                            text = { Text("Sort by Name") },
+                                            onClick = {
+                                                dropDown.value = false
+                                                isSortedByName.value = true
+                                            },
+                                            modifier = Modifier.padding(horizontal = 8.dp)
+                                        )
 
-                        )
-                        Spacer(Modifier.height(screenHeight * 0.02f))
+                                        // Divider for separation
+                                        HorizontalDivider(
+                                            color = Color.LightGray,
+                                            thickness = 1.dp
+                                        )
 
-                        GradientButton(
-                            text = "Add Contact",
-                            onClick = {
-                                navController.navigate(Routes.AddEditScreen(null))
-                            },
-                            icon = Icons.Default.Add,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = (screenWidth.value * 0.02).dp)
-                        )
-                        Spacer(Modifier.height(screenHeight * 0.02f))
+                                        // Sort by Date
+                                        DropdownMenuItem(
+                                            text = { Text("Sort by Date") },
+                                            onClick = {
+                                                dropDown.value = false
+                                                isSortedByName.value = false
+                                            },
+                                            modifier = Modifier.padding(horizontal = 8.dp)
+                                        )
+                                    }
+                                }
+                            }
 
-                        OutlinedTextField(
-                            value = text.value,
-                            onValueChange = {
-                                text.value = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = (screenWidth.value * 0.02).dp),
-                            placeholder = {
-                                Text(text = "Search contacts...")
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Rounded.List,
-                                    contentDescription = null
-                                )
-                            },
-                            shape = RoundedCornerShape(12.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color.White,
-                                unfocusedBorderColor = Color(0xFFB6DBFA),
-                                unfocusedContainerColor = Color(0xFFAED5F6),
-                                focusedContainerColor = Color(0xFFB6DBFA)
-                            )
-                        )
-
-
-                        Spacer(Modifier.height(screenHeight * 0.02f))
+                        }
 
 
                     }
 
                     Spacer(Modifier.height(screenHeight * 0.02f))
 
+                }
 
+                Spacer(Modifier.height(screenHeight * 0.02f))
+
+                if (filteredContacts.isNotEmpty()) {
+                    Row(
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .padding(horizontal = (screenWidth.value * 0.04).dp)
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(
+                                Brush.horizontalGradient(
+                                    listOf(
+                                        Color(0xFFFFFFFF),
+                                        Color(0xF3BADBF6)
+                                    )
+                                )
+                            )
+                            .shadow(20.dp, RoundedCornerShape(20.dp)),
+                        verticalAlignment = Alignment.CenterVertically
+
+                    ) {
+                        Spacer(Modifier.width((screenWidth.value * 0.02).dp))
+                        Icon(
+                            imageVector = if (isSortedByName.value) Icons.Outlined.SortByAlpha else Icons.Outlined.DateRange,
+                            contentDescription = null,
+                            tint = Color.Black,
+                            modifier = Modifier.size((screenWidth.value * 0.04).dp)
+                        )
+                        Spacer(Modifier.width((screenWidth.value * 0.01).dp))
+
+                        Text(
+                            text = if (isSortedByName.value) "Sorted by Name" else "Sorted by Date",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = (screenWidth.value * 0.03).sp
+                        )
+                        Spacer(Modifier.width((screenWidth.value * 0.02).dp))
+
+                    }
+                }
+
+                Spacer(Modifier.height(screenHeight * 0.03f))
+
+
+                if (favoriteContacts.isNotEmpty()) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = (screenWidth.value * 0.02).dp),
+                            .padding(horizontal = (screenWidth.value * 0.025).dp),
                         shape = RoundedCornerShape(20.dp),
                         colors = CardDefaults.cardColors(
                             containerColor = Color.White
                         ),
-                        border = BorderStroke(width = 1.dp, color = Color.LightGray),
+                        border = BorderStroke(width = 1.dp, color = Color.LightGray), // yellow accent
                         elevation = CardDefaults.cardElevation(
-                            defaultElevation = 2.dp
+                            defaultElevation = 3.dp
                         )
                     ) {
                         Spacer(Modifier.height(screenHeight * 0.03f))
@@ -263,46 +386,144 @@ fun HomeScreenUI(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Spacer(Modifier.width((screenWidth.value * 0.01).dp))
-
                             Icon(
-                                imageVector = Icons.Outlined.People,
+                                imageVector = Icons.Rounded.StarBorder,
                                 contentDescription = null,
-                                tint = Color.Blue,
+                                tint = Color(0xFFDEBB21),
                                 modifier = Modifier.size((screenWidth.value * 0.06).dp)
                             )
                             Spacer(Modifier.width((screenWidth.value * 0.02).dp))
-
                             Text(
-                                text = "All Contacts",
+                                text = "Favorites",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = (screenWidth.value * 0.05).sp
                             )
                         }
+
                         Spacer(Modifier.height(screenHeight * 0.02f))
 
-                        LazyColumn(
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = (screenWidth.value * 0.02).dp)
                         ) {
-                            items(filteredContacts) {
-                                ContactItemsUI(
-                                    contact = it,
-                                    viewModel = viewModel,
-                                    navController = navController,
-                                    modifier = Modifier.animateItem(
-                                        fadeInSpec = tween(durationMillis = 300),
-                                        fadeOutSpec = tween(durationMillis = 300) // Correct Usage,
+                            favoriteContacts.forEach { contact ->
+                                AnimatedVisibility(
+                                    visible = true,
+                                    enter = fadeIn(tween(300)) + slideInVertically(tween(300)) { it / 2 },
+                                    exit = fadeOut(tween(300)) + slideOutVertically(tween(300)) { it / 2 }
+                                ) {
+                                    ContactItemsUI(
+                                        contact = contact,
+                                        viewModel = viewModel,
+                                        navController = navController,
+                                        modifier = Modifier
                                     )
-                                )
+                                }
                             }
                         }
 
-                        Spacer(Modifier.height(screenHeight * 0.03f))
-
+                        Spacer(Modifier.height(screenHeight * 0.02f))
                     }
 
+                    Spacer(Modifier.height(screenHeight * 0.03f))
                 }
+
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = (screenWidth.value * 0.025).dp),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White
+                    ),
+                    border = BorderStroke(width = 1.dp, color = Color.LightGray),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 2.dp
+                    )
+                ) {
+                    Spacer(Modifier.height(screenHeight * 0.03f))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = (screenWidth.value * 0.02).dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Spacer(Modifier.width((screenWidth.value * 0.01).dp))
+
+                        Icon(
+                            imageVector = Icons.Outlined.People,
+                            contentDescription = null,
+                            tint = Color.Blue,
+                            modifier = Modifier.size((screenWidth.value * 0.06).dp)
+                        )
+                        Spacer(Modifier.width((screenWidth.value * 0.02).dp))
+
+                        Text(
+                            text = "All Contacts",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = (screenWidth.value * 0.05).sp
+                        )
+                    }
+                    Spacer(Modifier.height(screenHeight * 0.02f))
+
+                    if (filteredContacts.isEmpty()) {
+                        Column(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = (screenWidth.value * 0.02).dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.People,
+                                contentDescription = null,
+                                tint = Color.Gray,
+                                modifier = Modifier.size((screenWidth.value * 0.3).dp)
+                            )
+                            Spacer(Modifier.height(screenHeight * 0.015f))
+                            Text(
+                                text = "No Contacts Found",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = (screenWidth.value * 0.05).sp,
+                                color = Color.DarkGray
+                            )
+                            Spacer(Modifier.height(screenHeight * 0.01f))
+                            Text(
+                                text = "Try adjusting your search",
+                                fontWeight = FontWeight.Normal,
+                                fontSize = (screenWidth.value * 0.035).sp,
+                                color = Color.Gray
+                            )
+
+                            Spacer(Modifier.height(screenHeight * 0.02f))
+                        }
+                    } else {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = (screenWidth.value * 0.02).dp)
+                        ) {
+                            filteredContacts.forEach {
+                                AnimatedVisibility(
+                                    visible = true,
+                                    enter = fadeIn(tween(300)) + slideInVertically(tween(300)) { it / 2 },
+                                    exit = fadeOut(tween(300)) + slideOutVertically(tween(300)) { it / 2 }
+                                ) {
+                                    ContactItemsUI(
+                                        contact = it,
+                                        viewModel = viewModel,
+                                        navController = navController,
+                                        modifier = Modifier
+                                    )
+                                }
+                            }
+                        }
+                        Spacer(Modifier.height(screenHeight * 0.02f))
+                    }
+                }
+                Spacer(Modifier.height(screenHeight * 0.03f))
 
             }
         }
@@ -410,6 +631,15 @@ fun ContactItemsUI(
             defaultElevation = 2.dp
         )
     ) {
+        val gradientColors = listOf(
+            listOf(Color(0xFF55036B), Color(0xFF8A69C4)), // Purple
+            listOf(Color(0xFF045196), Color(0xFF42A5F5)), // Blue
+            listOf(Color(0xFFE1125E), Color(0xFFAD0ED7)), // Green
+            listOf(Color(0xFF5D4036), Color(0xFF936A6E)), //Brown
+            listOf(Color(0xFFFD5C16), Color(0xFFFAB147)), // Orange
+
+        )
+
         Spacer(Modifier.height(10.dp))
         Row(
             modifier = Modifier
@@ -423,15 +653,20 @@ fun ContactItemsUI(
                 }.map {
                     it.first()
                 }
+
+                val nameHash = contact.name.hashCode()
+                val gradient = gradientColors[abs(nameHash) % gradientColors.size]
+
                 Box(
                     modifier = Modifier
                         .size(65.dp)
                         .border(1.dp, Color.LightGray, CircleShape)
                         .clip(CircleShape)
-                        .background(Brush.horizontalGradient(listOf(Color(0xFFE05D5B),Color(
-                            0xFFE8100B
-                        )
-                        ))),
+                        .background(
+                            Brush.horizontalGradient(
+                                gradient
+                            )
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -477,22 +712,34 @@ fun ContactItemsUI(
                 Spacer(Modifier.height(5.dp))
                 Text(
                     text = "+91\u202F${contact.phoneNo}",
-                    fontWeight = FontWeight.Thin,
+                    fontWeight = FontWeight.Normal,
                     fontFamily = FontFamily.Monospace,
                     fontSize = 16.sp,
                     maxLines = 1,
-                    color = Color.DarkGray,
+                    color = Color(0xFF032A4D),
                     overflow = TextOverflow.Ellipsis,
                     softWrap = true,
                 )
 
             }
-            Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                val context = LocalContext.current
+            Row(
+                modifier = Modifier
+                    .padding( end = 1.dp)
+                    .wrapContentWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
+            ){
+                Icon(
+                    imageVector = if (contact.isFavorite == 1) Icons.Filled.Star else Icons.Outlined.StarOutline,
+                    contentDescription = "Toggle Favorite",
+                    tint = if (contact.isFavorite == 1) Color(0xFFFFC107) else Color.Gray,
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clickable {
+                            val updatedContact = contact.copy(isFavorite = if (contact.isFavorite == 1) 0 else 1)
+                            viewModel.upsertContact(updatedContact)
+                        }
+                )
                 Icon(
                     imageVector = Icons.Outlined.Call,
                     contentDescription = null,

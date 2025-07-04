@@ -16,4 +16,6 @@ data class Contact (
     @ColumnInfo(name = "profile", defaultValue = "")
    var profile: ByteArray?= null,
     var dateOfEdit : Long,
+    @ColumnInfo(name = "isFavorite", defaultValue = "0") // New field added
+    var isFavorite: Int = 0 // 0 = not favorite, 1 = favorite
 )

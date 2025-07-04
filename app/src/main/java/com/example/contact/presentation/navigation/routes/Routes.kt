@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 sealed class  Routes {
     @Serializable
-    object  HomeScreen : Routes()
+    data class  HomeScreen(val contactId: Int? ) : Routes()
 
     @Serializable
     data class  AddEditScreen(val contactId : Int? ) : Routes()
