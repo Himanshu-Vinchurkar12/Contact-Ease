@@ -34,9 +34,9 @@ This app is a **Contact Manager** with intuitive UI, clean architecture, gesture
 
 > Add your actual screenshots in a `/screenshots` folder or upload via Imgur and link them here.
 
-| Home Screen | Detail Screen | Edit Screen | Swipe-to-Call |
-|-------------|---------------|-------------|----------------|
-| ![home](Screenshot_20250704_234713.png) | ![detail](screenshots/detail_screen.png) | ![edit](screenshots/edit_screen.png) | ![swipe](screenshots/swipe_call.png) |
+| Home Screen | Detail Screen | Edit Screen | Add Screen | Swipe-to-Call |
+|-------------|---------------|-------------|----------------|----------------|
+| ![home](assets/HomeScreen.png) | ![detail](assets/DetailScreen.png) | ![edit](assets/EditScreen.png) | ![add](assets/AddScreen.png) | ![swipe](assets/SwipScreen.png) |
 
 ---
 
