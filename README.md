@@ -44,7 +44,7 @@ This app is a **Contact Manager** with intuitive UI, clean architecture, gesture
 
 > Click here to watch the app demo on Google Drive
 
-[![Watch Demo](https://drive.google.com/file/d/1lT31v_indZTI1H2qWxkgjqslgD0fpYGu/view?usp=drivesdk)](https://drive.google.com/file/d/1lPJlTuqxovoq5AI4pQXjbYmKRQxVhNmN/view?usp=drivesdk)
+[![Watch Demo](assets/Thumbnail.png)](https://drive.google.com/file/d/1lPJlTuqxovoq5AI4pQXjbYmKRQxVhNmN/view?usp=drivesdk)
 
 
 ---
