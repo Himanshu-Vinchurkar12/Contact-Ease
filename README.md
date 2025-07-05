@@ -42,9 +42,9 @@ This app is a **Contact Manager** with intuitive UI, clean architecture, gesture
 
 ## 🎥 App Preview (GIF)
 
-> Upload a screen recording or GIF here.
+> Click here to watch the app demo on Google Drive
 
-[![Watch Demo](https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg)](https://drive.google.com/file/d/1AbCDeFgHIjkLmNOPqrStuv/view?usp=sharing)
+[![Watch Demo](https://drive.google.com/file/d/1lT31v_indZTI1H2qWxkgjqslgD0fpYGu/view?usp=drivesdk)](https://drive.google.com/file/d/1lPJlTuqxovoq5AI4pQXjbYmKRQxVhNmN/view?usp=drivesdk)
 
 
 ---
