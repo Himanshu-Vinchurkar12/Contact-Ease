@@ -44,7 +44,8 @@ This app is a **Contact Manager** with intuitive UI, clean architecture, gesture
 
 > Upload a screen recording or GIF here.
 
-![app-preview](screenshots/app_preview.gif)
+[![Watch Demo](https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg)](https://drive.google.com/file/d/1AbCDeFgHIjkLmNOPqrStuv/view?usp=sharing)
+
 
 ---
 
