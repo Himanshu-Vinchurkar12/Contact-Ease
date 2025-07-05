@@ -25,8 +25,6 @@ This app is a **Contact Manager** with intuitive UI, clean architecture, gesture
   - Long-press to open **EditScreen**
 - 📞 **Swipe-to-Call**
   - Swipe left to initiate a **direct phone call**
-- ☁️ **Cloud Sync**
-  - Data is stored locally with optional **cloud storage integration**
 
 ---
 
