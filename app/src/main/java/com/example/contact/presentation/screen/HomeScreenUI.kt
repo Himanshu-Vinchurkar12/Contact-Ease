@@ -133,7 +133,9 @@ fun HomeScreenUI(
             }.let { list ->
                 if (isSortedByName.value) list.sortedBy { it.name.toLowerCase() } else list.sortedBy { it.dateOfEdit }
             }
-            val favoriteContacts = contacts.filter { it.isFavorite == 1 }
+            val favoriteContacts = contacts.filter { it.isFavorite == 1 }.let { list ->
+                if (isSortedByName.value) list.sortedBy { it.name.toLowerCase() } else list.sortedBy { it.dateOfEdit }
+            }
 
             Column(
                 modifier = Modifier
